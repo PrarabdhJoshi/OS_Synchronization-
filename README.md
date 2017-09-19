@@ -1,2 +1,17 @@
 # OS_Synchronization-
-Resolving Sync. Problem using Mutex and Semaphores
+
+Resolving Syncchronization Problem using Mutex and Semaphores
+
+Consumer Producer Problem
+
+Since the two processes are sharing access to the buffer, it might lead to a synchronization problem. The two processes when created by the main() function, each gets an access to the processor in a time sliced manner, which may result in some unexpected results, if they happen to work on same set of data and functions. For eg, if the consumer gets access to the buffer and consumes the ith index element of the buffer which has yet not been updated by the producer, the consumed value may be faulty resulting in some error. The two processes are probably running at a different speed, and for varying bursts of CPU time, this can be understood from the following illustration. Suppose that both the processes are allocated equal burst of processor time. Now the producer process needs more time to operate than the consumer process since it has to spare additional time for writing and storing the element in the buffer. Let’s say that in one clock cycle the producer writes two elements into memory. Contrary to this the consumer process is capable of consuming three elements from the buffer in one given CPU cycle. This would obviously lead to unwanted results as the consumer will access at least one bad value per cycle of processor’s time. Another situation may arise where the priority of the producer process is higher and it begins overwriting the values in the buffer before they were ever consumed by the processor. Therefore, to overcome such flawed results we use the concept of synchronization and context switching.
+
+By using Xinu Semaphores, we can implement a mutex implementation in our code. We will define a Critical Section in our
+code, that can only be accessed by one process at a time. We will use two semaphore variables, produce and consume, each with either a value of 1 or 0 , at a given instance of time. When the value of the mutex is 1, the process requesting entry in the critical section is granted access. Similarly for the value 0, the critical section is locked and no access is granted. The two functions we use to implement the above scenario are mutex_acquire(sid mutex) and mutex_release(sid mutex). The call to mutex acquire checks the value of mutex, if it is equal to 1, the process requesting it is granted access to enter the critical section, and the value of mutex is decremented by 1. Similarly while a process exits the critical section, it calls the mutex_release(sid mutex) function which sets the value of the mutex back to one, making the critical section available for the next function trying to access it.
+
+A mutex is a normal counting semaphore with a count value of 1. It is more stringent to the fact that it can only be released by the same thread that locked it. Whereas a Semaphore count can be released by other threads too. Semaphores form a buffer of a constant size and can add items in the buffer from where it can be consumed by the consumer process.
+
+The output of mutex produces iterative production and consumption of items, one at a time, while the semaphore outputs chunks of produced followed by consumed items in a allotted time slice.
+
+Conclusion:
+Solved producer consumer problem with the use of both the semaphores and the mutex. We implemented mutex with two semaphore variables consume and produce each toggling between the value 0 and 1, while semaphore queues were implemented with an allowed buffer size.
